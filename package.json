@@ -1,0 +1,28 @@
+{
+  "name": "daddy",
+  "version": "0.0.2",
+  "description": "Simple and fun permission checking",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/teemualap/daddy.git"
+  },
+  "keywords": [
+    "type",
+    "validation",
+    "property"
+  ],
+  "author": "Teemu Alapoikela",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/teemualap/daddy/issues"
+  },
+  "homepage": "https://github.com/teemualap/daddy",
+  "devDependencies": {
+    "check-types": "^2.2.0",
+    "mocha": "^2.1.0"
+  }
+}
