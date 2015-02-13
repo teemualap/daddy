@@ -42,18 +42,18 @@ dad.check('doStuff'); // true
 
 ## API
 
-### new Daddy([indentifier:function])
+#### new Daddy([indentifier:function])
 **@param identifier**  
 a function that returns the current user
 
-### Daddy.prototype.permission([name:string, [handler:function, ...]])
+#### Daddy.prototype.permission([name:string, [handler:function, ...]])
 **@param name**  
 an unique permission name, throws on dupes
 
 **@param handler**  
 a handler function that gets called on Daddy.prototype.check with the result of the indentifier function as an argument. Supports multiple handlers.
 
-### Daddy.prototype.check([name:string])
+#### Daddy.prototype.check([name:string])
 **@param name**  
 The permission handler stack to be called
 
