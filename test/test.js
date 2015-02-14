@@ -46,16 +46,6 @@ describe('Daddy', function() {
 
     });
 
-    it('should throw when identifier is not a function', function() {
-
-      assert.throws(
-        function(){
-          var d = new Daddy('fake identifier string');
-        }
-      );
-
-    });
-
 
   });
 
