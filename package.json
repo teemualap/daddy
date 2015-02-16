@@ -11,9 +11,8 @@
     "url": "git@github.com/teemualap/daddy.git"
   },
   "keywords": [
-    "type",
-    "validation",
-    "property"
+    "permission",
+    "auth"
   ],
   "author": "Teemu Alapoikela",
   "license": "MIT",
@@ -21,8 +20,10 @@
     "url": "https://github.com/teemualap/daddy/issues"
   },
   "homepage": "https://github.com/teemualap/daddy",
+  "dependencies": {
+    "check-types": "^2.2.0"
+  },
   "devDependencies": {
-    "check-types": "^2.2.0",
     "mocha": "^2.1.0"
   }
 }
