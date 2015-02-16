@@ -79,7 +79,7 @@ daddy.permission(/Comment$/, ensureRegistered);
 ```
 
   *@param* **handler**  
-  A handler function that gets called on Daddy.prototype.check with the result of the indentifier function as an argument. Supports multiple handlers.
+  A handler function that gets called on Daddy.check. Supports multiple handlers.
 
 
 #### Daddy.defineParamsGetter(fn:Function)
@@ -91,9 +91,9 @@ daddy.permission(/Comment$/, ensureRegistered);
   *@param* **name**  
   The permission layer to be looked up and called.
 
-  Calls each handler in each satisfying permission layer, left to right, passing in the result of paramsGetter, if set, and <param>s as arguments. Short circuits as soon as any of the handlers return false.
+  Calls each handler in each satisfying permission layer, passing in the result of paramsGetter, if set, and passed **param**s as arguments. Short circuits as soon as any of the handlers return false.
 
-  Lookups are cached, so subsequent calls with the same <name> are quaranteed to be as fast as accessing an array by a known index.
+  Lookups are cached, so subsequent calls with the same **name** are quaranteed to be as fast as accessing an array by a known index.
 
 
 ## More examples
@@ -145,16 +145,19 @@ permissionManager.check('idle', player); // dad is mad -> false
 
 ## Contributions
 
-Use babel to compile src -> lib
-```bash
-$ npm install -g babel
-$ make build
-```
-
-Test (install mocha first)
+Clone and install deps
 ```bash
 $ npm install
-$ make test
+```
+
+Build
+```bash
+$ npm run build
+```
+
+Test
+```bash
+$ npm run test
 ```
 
 ## License
