@@ -6,11 +6,10 @@ matrix:
   allow_failures:
   - node_js: '0.11'
   fast_finish: true
-before_script: npm install
+before_script: npm install && npm run build
 script: npm run coverage
 after_script: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
   && rm -rf ./coverage
-before_deploy: npm run build
 deploy:
   provider: npm
   email: teemu.alapoikela@gmail.com
