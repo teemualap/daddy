@@ -57,7 +57,7 @@ dad.check('doUnknownAction'); // true, because dad is not mad
   If set to true, will deny all unknown permissions.
 
 
-#### Daddy.prototype.permission(name:String, handler:Function, ...)
+#### Daddy.permission(name:String, handler:Function, ...)
   *@param* **name**  
   A unique permission name, throws on dupes. May be regexp for useful permission patterns such as:
 
@@ -78,12 +78,12 @@ daddy.permission(/Comment$/, ensureRegistered);
   A handler function that gets called on Daddy.prototype.check with the result of the indentifier function as an argument. Supports multiple handlers.
 
 
-#### Daddy.prototype.defineParamsGetter(fn:Function)
+#### Daddy.defineParamsGetter(fn:Function)
   *@param* **fn**  
   Register a param getter function in a daddy instance. It set, will head its' return value in params passed to check. This is especially useful for user authorization when you know for sure that the current user is always needed in checks.
 
 
-#### Daddy.prototype.check(name:String, [param:any], ...)
+#### Daddy.check(name:String, [param:any], ...)
   *@param* **name**  
   The permission layer to be looked up and called.
 
