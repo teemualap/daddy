@@ -3,6 +3,7 @@
   Simple, powerful and fun permission checks for Javascript.
   
   [![NPM Version](https://img.shields.io/npm/v/daddy.svg)](https://www.npmjs.com/package/daddy)
+  [![Coverage Status](https://coveralls.io/repos/teemualap/daddy/badge.svg?branch=master)](https://coveralls.io/r/teemualap/daddy?branch=master)
   [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/teemualap/daddy/master/LICENSE)
 
 
