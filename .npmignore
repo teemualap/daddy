@@ -1,4 +1,5 @@
 node_modules
-src
-Makefile
 test
+src
+coverage
+travis.yml

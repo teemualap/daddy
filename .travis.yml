@@ -1,0 +1,22 @@
+language: node_js
+node_js:
+- '0.10'
+- '0.11'
+matrix:
+  allow_failures:
+  - node_js: '0.11'
+  fast_finish: true
+before_script: npm install
+script: npm run coverage
+after_script: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+  && rm -rf ./coverage
+before_deploy: npm run build
+deploy:
+  provider: npm
+  email: teemu.alapoikela@gmail.com
+  api_key:
+    secure: CbzcWKqJrVoyTCKWHOZIkBO+rQLHhYEB57CDkMwoF3ml6BT4ozgz25hyOCjNivsb0id81mpsraI3RtenGYzB4sJyzxjTDXPCOtdAep1eraCW1ZsuCd+EdE08WmdxSSeY5P/94cWO3+ehQkhCh8QjXzWVCzoOQXB5bohEZcjboxw=
+  on:
+    tags: true
+    repo: teemualap/daddy
+after_deploy: rm -rf ./lib
