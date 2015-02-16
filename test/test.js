@@ -1,7 +1,11 @@
 var assert  = require('assert'),
-    Daddy = require('../lib/daddy')
+    Daddy   = require('../lib/daddy')
 ;
 
+
+//
+// helper functions
+//
 function positive() {
   return true;
 }
@@ -28,6 +32,8 @@ function getEditor() {
   };
 }
 
+
+
 describe('Daddy', function() {
 
 
@@ -36,11 +42,11 @@ describe('Daddy', function() {
   // 
   describe('#constructor', function(){
 
-    it('should throw when identifier is not passed', function() {
+    it('should throw when mad is set and not boolean', function() {
 
       assert.throws(
         function(){
-          var d = new Daddy();
+          var d = new Daddy('mad');
         }
       );
 
@@ -55,13 +61,57 @@ describe('Daddy', function() {
   // 
   describe('#permission', function(){
 
-    var d = new Daddy(getAdmin);
+    var d = new Daddy();
 
     it('should throw when permission name is not passed', function() {
 
       assert.throws(
         function(){
           d.permission();
+        }
+      );
+
+    });
+
+    it('should allow regexp as a name', function() {
+
+      assert.doesNotThrow(
+        function(){
+          d.permission(/Comment$/, positive);
+        }
+      );
+
+    });
+
+    it('should allow only string or regexp as a name', function() {
+
+      assert.doesNotThrow(
+        function(){
+          d.permission(/REGEXP$/, positive);
+        }
+      );
+
+      assert.doesNotThrow(
+        function(){
+          d.permission('someString', positive);
+        }
+      );
+
+      assert.throws(
+        function(){
+          d.permission(3, positive);
+        }
+      );
+
+      assert.throws(
+        function(){
+          d.permission({}, positive);
+        }
+      );
+
+      assert.throws(
+        function(){
+          d.permission([], positive);
         }
       );
 
@@ -126,7 +176,7 @@ describe('Daddy', function() {
   // 
   describe('#check', function(){
 
-    var d = new Daddy(getAdmin);
+    var d = new Daddy();
 
     it('should throw when permission name was not passed', function() {
 
@@ -148,43 +198,53 @@ describe('Daddy', function() {
 
     });
 
-    it('should throw when the given permission has not been registered', function() {
+    it('should grant unknown permissions by default', function() {
 
-      assert.throws(
-        function(){
-          d.check('lol');
-        }
-      );
+      assert.equal(d.check('lol'), true);
 
     });
 
-    it('should throw when user is not assigned while checking a permission', function() {
+    it('should deny unknown permissions if dad is mad', function() {
 
-      var d = new Daddy(noUser);
-      d.permission('task', positive);
-
-      assert.throws(
-        function(){
-          d.check('task');
-        }
-      );
+      var maddad = new Daddy(true);
+      assert.equal(maddad.check('lol'), false);
 
     });
 
-    it('should return true when checking a valid permission against a valid user', function() {
+    it('should support any number of arguments on handlers', function() {
 
-      var d = new Daddy(getAdmin);
-      d.permission('ensureAdmin', function(user) {
-        return user.role === 'admin';
+      var d = new Daddy();
+
+      d.permission('argumentsTest', function(arg1, arg2) {
+        return arg1 === 'foo' && arg2 === 'works';
       });
 
-      assert.equal(d.check('ensureAdmin'), true);
+      assert.equal(d.check('argumentsTest', 'foo', 'works'), true);
+
+    });
+
+    it('should support param getter and check params together', function() {
+
+      var d       = new Daddy(),
+          numbers = [];
+
+      d.defineParamsGetter(function(){
+        return ['h','e','l'];
+      });
+
+      d.permission('paramtester', function(a,b,c,d,e) {
+        return a+b+c+d+e === 'hello';
+      });
+
+      assert.equal(d.check('paramtester','l','o'), true);
 
     });
 
     it('should return false when any of the handlers in any order return false', function() {
 
-      var d = new Daddy(getAdmin);
+      var d = new Daddy();
+
+      d.defineParamsGetter(getAdmin);
 
       d.permission('ensureAdmin',
         function(user) {
@@ -205,7 +265,7 @@ describe('Daddy', function() {
     it('should short circuit when a handler returns false', function() {
 
       var importantVar = 'precious';
-      var d = new Daddy(getAdmin);
+      var d = new Daddy();
 
       d.permission('someTask',
         negative,
@@ -218,6 +278,57 @@ describe('Daddy', function() {
       d.check('someTask');
 
       assert.equal(importantVar, 'precious');
+
+    });
+
+    it('should run all available handlers (support possible namespaces)', function() {
+
+      var d     = new Daddy(),
+          count = 0
+      ;
+
+      d.permission(/^my:/, function() {
+        count++;
+        return true;
+      });
+
+      d.permission(/^my:great:/, function() {
+        count++;
+        return true;
+      });
+
+      d.permission('my:great:namespace', function() {
+        count++;
+        return true;
+      });
+
+      d.check('my:great:namespace');
+
+      assert.equal(count, 3);
+
+    });
+
+    it('should cache layer lookups (2000 permissions)', function() {
+
+      var t1 = {},
+          t2 = {},
+          d = new Daddy();
+
+      for (var i = 0; i < 2000; i++) {
+        d.permission('cachetest:'+i, positive);
+      }
+
+      t1.start = Date.now();
+      t1.result = d.check('cachetest:1999');
+      t1.end = Date.now();
+      t1.elapsed = t1.end - t1.start;
+
+      t2.start = Date.now();
+      t2.result = d.check('cachetest:1999');
+      t2.end = Date.now();
+      t2.elapsed = t2.end - t2.start;
+
+      assert.ok(t1.elapsed > t2.elapsed);
 
     });
 
