@@ -1,6 +1,9 @@
 # Daddy
 
   Simple, powerful and fun permission checks for Javascript.
+  
+  [![NPM Version](https://img.shields.io/npm/v/daddy.svg)](https://www.npmjs.com/package/daddy)
+  [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/teemualap/daddy/master/LICENSE)
 
 
 ## Installation
