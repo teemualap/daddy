@@ -4,7 +4,9 @@
   "description": "Simple and fun permission checking",
   "main": "lib/daddy.js",
   "scripts": {
-    "test": "make test"
+    "test": "./node_modules/.bin/mocha --reporter list",
+    "build": "babel src --out-dir lib",
+    "coverage": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --reporter spec --check-leaks test/"
   },
   "repository": {
     "type": "git",
@@ -24,6 +26,7 @@
     "check-types": "^2.2.0"
   },
   "devDependencies": {
+    "coveralls": "^2.11.2",
     "mocha": "^2.1.0"
   }
 }
