@@ -79,6 +79,8 @@ export default function Daddy(mad) {
       new Permission(regex, handlers)
     );
 
+    return this;
+
   };
 
 
@@ -138,7 +140,8 @@ export default function Daddy(mad) {
                             ? fn
                             : function() {
                                 return [fn()];
-                              }
+                              };
+    return this;
   };
 
   return this;
