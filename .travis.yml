@@ -20,4 +20,4 @@ deploy:
   on:
     tags: true
     repo: teemualap/daddy
-after_deploy: rm -rf ./lib
+after_deploy: rm -rf ./dist

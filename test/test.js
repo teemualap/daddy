@@ -1,5 +1,5 @@
 var assert  = require('assert'),
-    Daddy   = require('../lib/daddy')
+    Daddy   = require('../dist/daddy')
 ;
 
 
