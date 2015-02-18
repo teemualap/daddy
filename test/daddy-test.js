@@ -1,6 +1,5 @@
-var assert  = require('assert'),
-    Daddy   = require('../dist/daddy')
-;
+import Daddy  from '../lib/daddy';
+import assert from 'assert';
 
 
 //

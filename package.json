@@ -2,11 +2,11 @@
   "name": "daddy",
   "version": "1.1.0",
   "description": "Simple and fun permission checking",
-  "main": "dist/daddy.js",
+  "main": "./lib/daddy.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter list",
-    "build": "babel src --out-dir dist",
-    "coverage": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --reporter spec --check-leaks test/"
+    "test": "./node_modules/.bin/mocha --reporter spec --compilers js:babel/register",
+    "build": "babel lib --out-dir es5",
+    "coverage": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --reporter spec --compilers js:babel/register --check-leaks test/"
   },
   "repository": {
     "type": "git",

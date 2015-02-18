@@ -2,4 +2,5 @@ node_modules
 .DS_Store
 *.log
 coverage
-dist
+es5
+es5.js

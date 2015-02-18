@@ -7,11 +7,13 @@ matrix:
     - node_js: '0.11'
   fast_finish: true
 
-before_script: npm install && npm run build
+before_script: npm install
 script: npm run coverage
 after_script: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
   && rm -rf ./coverage
 
+before_deploy: echo -e "/*\n ES5 compatible commonJS distribution\n*/\nmodule.exports = require('./dist/daddy');" >> es5.js
+  && npm run build
 deploy:
   provider: npm
   email: teemu.alapoikela@gmail.com
@@ -20,4 +22,4 @@ deploy:
   on:
     tags: true
     repo: teemualap/daddy
-after_deploy: rm -rf ./dist
+after_deploy: rm -rf ./es5 && rm es5.js
