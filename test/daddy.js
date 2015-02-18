@@ -1,40 +1,19 @@
-import Daddy  from '../lib/daddy';
-import assert from 'assert';
-
+import Daddy    from '../lib/daddy';
+import Bluebird from 'bluebird';
+import assert   from 'assert';
 
 //
-// helper functions
+// helper handlers
 //
 function positive() {
   return true;
 }
-
 function negative() {
-  return false;
+  return 'Not allowed';
 }
-
-function noUser() {
-  return null;
-}
-
-function getAdmin() {
-  return {
-    name: 'Teemu',
-    role: 'admin'
-  };
-}
-
-function getEditor() {
-  return {
-    name: 'Harri',
-    role: 'editor'
-  };
-}
-
 
 
 describe('Daddy', function() {
-
 
   // 
   // daddy constructor
@@ -171,9 +150,9 @@ describe('Daddy', function() {
   
 
   //
-  // check
+  // checks
   // 
-  describe('#check', function(){
+  describe('#checks', function(){
 
     var d = new Daddy();
 
@@ -197,16 +176,43 @@ describe('Daddy', function() {
 
     });
 
-    it('should grant unknown permissions by default', function() {
+    it('should always return a proper response object', function(done) {
 
-      assert.equal(d.check('lol'), true);
+      var syncResult = d.check('lol');
+
+      assert.equal(typeof syncResult, 'object');
+      assert.equal(typeof syncResult.granted, 'boolean');
+      assert.equal(Object.keys(syncResult).length, 2);
+
+      d.when('lol').then(function(result) {
+        assert.equal(typeof result, 'object');
+        assert.equal(typeof result.granted, 'boolean');
+        assert.equal(Object.keys(result).length, 2);
+        done();
+      });
 
     });
 
-    it('should deny unknown permissions if dad is mad', function() {
+    it('should grant unknown permissions by default', function(done) {
+
+      assert.equal(d.check('lol').granted, true);
+
+      d.when('lol').then(function(result) {
+        assert.equal(result.granted, true);
+        done();
+      });
+
+    });
+
+    it('should deny unknown permissions if dad is mad', function(done) {
 
       var maddad = new Daddy(true);
-      assert.equal(maddad.check('lol'), false);
+      assert.equal(maddad.check('lol').granted, false);
+
+      maddad.when('lol').catch(function(err) {
+        assert.equal(err.granted, false);
+        done();
+      });
 
     });
 
@@ -218,7 +224,7 @@ describe('Daddy', function() {
         return arg1 === 'foo' && arg2 === 'works';
       });
 
-      assert.equal(d.check('argumentsTest', 'foo', 'works'), true);
+      assert.equal(d.check('argumentsTest', 'foo', 'works').granted, true);
 
     });
 
@@ -235,15 +241,20 @@ describe('Daddy', function() {
         return a+b+c+d+e === 'hello';
       });
 
-      assert.equal(d.check('paramtester','l','o'), true);
+      assert.equal(d.check('paramtester','l','o').granted, true);
 
     });
 
-    it('should return false when any of the handlers in any order return false', function() {
+    it('should not grant when any of the handlers in any order do not pass', function() {
 
       var d = new Daddy();
 
-      d.defineParamsGetter(getAdmin);
+      d.defineParamsGetter(function(){
+        return {
+          name: 'Teemu',
+          role: 'admin'
+        };
+      });
 
       d.permission('ensureAdmin',
         function(user) {
@@ -256,12 +267,12 @@ describe('Daddy', function() {
         negative, positive
       );
 
-      assert.equal(d.check('ensureAdmin'), false);
-      assert.equal(d.check('ensurePositive'), false);
+      assert.equal(d.check('ensureAdmin').granted, false);
+      assert.equal(d.check('ensurePositive').granted, false);
 
     });
 
-    it('should short circuit when a handler returns false', function() {
+    it('should short circuit when a handler does not pass', function() {
 
       var importantVar = 'precious';
       var d = new Daddy();
@@ -328,6 +339,35 @@ describe('Daddy', function() {
       t2.elapsed = t2.end - t2.start;
 
       assert.ok(t1.elapsed > t2.elapsed);
+
+    });
+
+  });
+  
+  //
+  // promise implementation
+  // 
+  describe('#promiseImplementation', function() {
+
+    it('should change the promise implementation', function(done) {
+
+      var d = new Daddy();
+
+      d.permission('promise', positive);
+
+      d.setPromiseImplementation(Bluebird).then(
+        function(res) {
+
+          d.when('promise')
+          .then(
+            function() {
+              assert.ok(true);
+              done();
+            }
+          );
+
+        }
+      );
 
     });
 
