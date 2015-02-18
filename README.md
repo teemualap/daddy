@@ -16,12 +16,25 @@ $ npm install daddy
 
 ## Usage
 
-  A common use case:
+  ECMAScript 6 version is the default:
 
 ```js
 
-// commonJS
-var Daddy = require('daddy');
+import Daddy from 'daddy';
+
+```
+
+  For ECMAScript 5 compatibility, use the distributed commonJS build.
+
+```js
+
+var Daddy = require('daddy/es5');
+
+```
+
+### A common use case:
+
+```js
 
 function getCurrentUser() {
   return {
@@ -56,14 +69,22 @@ dad.check('doUnknownAction'); // true, because dad is not mad
 ## API
 
 
-#### new Daddy([mad:Boolean])
-  *@param* **mad**  
-  If set to true, will deny all unknown permissions.
+#### new Daddy(mad)
+
+| Param     | Type      | Description
+| :-------- | :------   | :-------
+| *mad*     | `Boolean` | If set to true, will deny all unknown permissions.
 
 
-#### Daddy.permission(name:String, handler:Function, ...)
-  *@param* **name**  
-  A unique permission name, throws on dupes. May be regexp for useful permission patterns such as:
+
+#### Daddy.permission(pattern *, handler *, ...)
+
+| Param     | Type              | Description
+| :-------- | :------           | :-------
+| *pattern* | `String|RegExp`   | A unique pattern, throws on dupes. 
+| *handler* | `function`        | A handler function that gets called on Daddy.check. Supports multiple handlers.  
+
+Use RegExp for useful catch-many permissions or namespacing:
 
 ```js
 
@@ -78,20 +99,26 @@ daddy.permission(/Comment$/, ensureRegistered);
 
 ```
 
-  *@param* **handler**  
-  A handler function that gets called on Daddy.check. Supports multiple handlers.
 
+#### Daddy.defineParamsGetter(fn *)
 
-#### Daddy.defineParamsGetter(fn:Function)
-  *@param* **fn**  
+| Param     | Type
+| :-------- | :------ 
+| *fn*      | `Function`
+
   Register a param getter function in a daddy instance. It set, will head its' return value in params passed to check. This is especially useful for user authorization when you know for sure that the current user is always needed in checks.
 
 
-#### Daddy.check(name:String, [param:any], ...)
-  *@param* **name**  
-  The permission layer to be looked up and called.
+#### Daddy.check(name *, param,  ...)
 
-  Calls each handler in each satisfying permission layer, passing in the result of paramsGetter, if set, and passed **param**s as arguments. Short circuits as soon as any of the handlers return false.
+| Param     | Type      | Description
+| :-------- | :------   | :-------
+| *name*    | `String`  | The permission name to be matched against.
+| *param*   | `any`     | Optional parameters to be passed to permission layer handlers.
+
+  Performs a synchronous check returning either true of false.
+
+  Calls each handler in each satisfying permission layer, passing in the result of paramsGetter, if set, and passed **param**(s) as arguments. Short circuits as soon as any of the handlers return false.
 
   Lookups are cached, so subsequent calls with the same **name** are quaranteed to be as fast as accessing an array by a known index.
 
@@ -100,13 +127,14 @@ daddy.permission(/Comment$/, ensureRegistered);
 
   You may want to namespace permissions:
 
-``` js
+```js
 
 var daddy = new Daddy();
 
-daddy.permission(/^core:/           , ensureRegistered);
-daddy.permission(/^core:utils:/     , ensureDeveloper);
-daddy.permission(/^core:utils:api/  , ensureAdmin);
+daddy
+  .permission(/^core:/           , ensureRegistered)
+  .permission(/^core:utils:/     , ensureDeveloper)
+  .permission(/^core:utils:api/  , ensureAdmin);
 
 ```
 
